@@ -16,6 +16,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.todoapp.ui.theme.TodoAppTheme
 
 class MainActivity : ComponentActivity() {
+    private val MY_PERMISSIONS_REQUEST_SEND_SMS = 1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val todoViewModel = ViewModelProvider(this)[TodoViewModel::class.java]

@@ -18,6 +18,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -43,6 +44,10 @@ fun ToDoListPage(viewModel: TodoViewModel){
         mutableStateOf("")
     }
 
+    var inputNumber by remember{
+        mutableStateOf("")
+    }
+
     Column (
         modifier = Modifier
             .fillMaxHeight()
@@ -56,20 +61,25 @@ fun ToDoListPage(viewModel: TodoViewModel){
             horizontalArrangement = Arrangement.SpaceEvenly
         )
         {
-            OutlinedTextField(value = inputText, onValueChange = {
+            OutlinedTextField(
+                value = inputText,
+                onValueChange = {
                 inputText = it
-            })
+            },
+                label = {Text(text = "Nombre")}
+            )
 
             IconButton(onClick = {
-                viewModel.addTodo(inputText)
-                try {
-                    val smsManager = SmsManager.getDefault()
-                    smsManager.sendTextMessage("51929427785", null, inputText, null, null)
-                    Log.d("SMS", "Success")
-                } catch (e: Exception) {
-                    Log.d("SMS",e.toString())
-                }
+                viewModel.addTodo(inputText, inputNumber)
+//                try {
+//                    val smsManager = SmsManager.getDefault()
+//                    smsManager.sendTextMessage("51"+inputNumber, null, inputText, null, null)
+//                    Log.d("SMS", "Success")
+//                } catch (e: Exception) {
+//                    Log.d("SMS",e.toString())
+//                }
                 inputText = ""
+                inputNumber = ""
             }) {
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_add_24),
@@ -77,6 +87,21 @@ fun ToDoListPage(viewModel: TodoViewModel){
                     tint = Color.White
                 )
             }
+        }
+
+        Row (
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ){
+            OutlinedTextField(
+                value = inputNumber,
+                onValueChange = {
+                    inputNumber = it
+                },
+                label = {Text(text = "Número")}
+            )
         }
 
         todoList?.let{
@@ -126,6 +151,11 @@ fun TodoItem(item: Todo, onDelete: ()->Unit){
             )
             Text(
                 text = item.title,
+                fontSize = 20.sp,
+                color = Color.White
+            )
+            Text(
+                text = item.number,
                 fontSize = 20.sp,
                 color = Color.White
             )
