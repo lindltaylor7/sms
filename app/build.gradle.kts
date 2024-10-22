@@ -76,4 +76,8 @@ dependencies {
 
     // To use Kotlin annotation processing tool (kapt)
     kapt("androidx.room:room-compiler:$room_version")
+
+    implementation("org.apache.poi:poi:5.2.5")
+
+    implementation("org.apache.poi:poi-ooxml:5.2.5")
 }
