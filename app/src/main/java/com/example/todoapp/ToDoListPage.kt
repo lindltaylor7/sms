@@ -1,5 +1,6 @@
 package com.example.todoapp
 
+import android.content.Context
 import android.telephony.SmsManager
 import android.util.Log
 import android.widget.Toast
@@ -13,6 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -48,29 +52,34 @@ fun ToDoListPage(viewModel: TodoViewModel){
         mutableStateOf("")
     }
 
+    val context = LocalContext.current
+
     Column (
         modifier = Modifier
             .fillMaxHeight()
+            .fillMaxWidth()
             .padding(8.dp)
     ){
-
-        Row (
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        )
-        {
-            OutlinedTextField(
-                value = inputText,
-                onValueChange = {
+        OutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = inputText,
+            onValueChange = {
                 inputText = it
             },
-                label = {Text(text = "Nombre")}
-            )
+            label = {Text(text = "Nombre completo")}
+        )
 
-            IconButton(onClick = {
-                viewModel.addTodo(inputText, inputNumber)
+        OutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = inputNumber,
+            onValueChange = {
+                inputNumber = it
+            },
+            label = {Text(text = "Número de Celular")}
+        )
+
+        Button(onClick = {
+            viewModel.addTodo(inputText, inputNumber)
 //                try {
 //                    val smsManager = SmsManager.getDefault()
 //                    smsManager.sendTextMessage("51"+inputNumber, null, inputText, null, null)
@@ -78,31 +87,11 @@ fun ToDoListPage(viewModel: TodoViewModel){
 //                } catch (e: Exception) {
 //                    Log.d("SMS",e.toString())
 //                }
-                inputText = ""
-                inputNumber = ""
-            }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.baseline_add_24),
-                    contentDescription = "Delete",
-                    tint = Color.White
-                )
-            }
-        }
-
-        Row (
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ){
-            OutlinedTextField(
-                value = inputNumber,
-                onValueChange = {
-                    inputNumber = it
-                },
-                label = {Text(text = "Número")}
-            )
-        }
+            inputText = ""
+            inputNumber = ""
+        },
+            modifier = Modifier.fillMaxWidth()
+            ) { Text(text = "Agregar Contacto") }
 
         todoList?.let{
             LazyColumn (
@@ -119,10 +108,14 @@ fun ToDoListPage(viewModel: TodoViewModel){
             textAlign = TextAlign.Center,
             text="No hay ningun evento aun",
             fontSize = 16.sp,
-            color = Color.White
+            color = Color.Black
         )
 
-
+        FloatingActionButton(onClick ={
+            sendMessage(context)
+        },
+            modifier = Modifier.fillMaxWidth()
+            ) { Text(text = "Enviar Mensajes") }
     }
 }
 
@@ -169,4 +162,9 @@ fun TodoItem(item: Todo, onDelete: ()->Unit){
             }
 
     }
+}
+
+fun sendMessage(context: Context){
+
+
 }
