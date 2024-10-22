@@ -39,11 +39,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.text.SimpleDateFormat
 import java.util.Locale
+import kotlinx.coroutines.*
 
 
 @Composable
 fun ToDoListPage(viewModel: TodoViewModel){
-    val todoList by viewModel.todoList.observeAsState()
+    val todoList by viewModel.todoList.observeAsState(emptyList())
     var inputText by remember{
         mutableStateOf("")
     }
@@ -80,13 +81,6 @@ fun ToDoListPage(viewModel: TodoViewModel){
 
         Button(onClick = {
             viewModel.addTodo(inputText, inputNumber)
-//                try {
-//                    val smsManager = SmsManager.getDefault()
-//                    smsManager.sendTextMessage("51"+inputNumber, null, inputText, null, null)
-//                    Log.d("SMS", "Success")
-//                } catch (e: Exception) {
-//                    Log.d("SMS",e.toString())
-//                }
             inputText = ""
             inputNumber = ""
         },
@@ -112,7 +106,8 @@ fun ToDoListPage(viewModel: TodoViewModel){
         )
 
         FloatingActionButton(onClick ={
-            sendMessage(context)
+            val extractedList = extractListFromTodoList(todoList)
+            sendMessagesWithDelay(extractedList, context)
         },
             modifier = Modifier.fillMaxWidth()
             ) { Text(text = "Enviar Mensajes") }
@@ -164,7 +159,23 @@ fun TodoItem(item: Todo, onDelete: ()->Unit){
     }
 }
 
-fun sendMessage(context: Context){
+fun sendMessagesWithDelay(todoList: List<Todo>, context: Context){
+    CoroutineScope(Dispatchers.Main).launch {
+        for (item in todoList){
+            try {
+                val smsManager = SmsManager.getDefault()
+                smsManager.sendTextMessage("51"+item.number, null, "Test de SMS", null, null)
+                Log.d("SMS", "Success")
+            } catch (e: Exception) {
+                Log.d("SMS",e.toString())
+            }
+            Toast.makeText(context, item.title, Toast.LENGTH_SHORT).show()
+        }
+        delay(3000)
+    }
 
+}
 
+fun extractListFromTodoList(todoList: List<Todo>): List<Todo> {
+    return todoList
 }
