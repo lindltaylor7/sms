@@ -109,7 +109,7 @@ fun ToDoListPage(viewModel: TodoViewModel){
 
         DocumentPicker(viewModel)
 
-       /* OutlinedTextField(
+       OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = inputText,
             onValueChange = {
@@ -135,6 +135,13 @@ fun ToDoListPage(viewModel: TodoViewModel){
             modifier = Modifier.fillMaxWidth()
             ) { Text(text = "Agregar Contacto") }
 
+        Button(onClick ={
+            val extractedList = extractListFromTodoList(todoList)
+            sendMessagesWithDelay(extractedList, context)
+        },
+            modifier = Modifier.fillMaxWidth()
+        ) { Text(text = "Enviar Mensajes") }
+
         todoList?.let{
             LazyColumn (
                 content = {
@@ -153,12 +160,7 @@ fun ToDoListPage(viewModel: TodoViewModel){
             color = Color.Black
         )
 
-        FloatingActionButton(onClick ={
-            val extractedList = extractListFromTodoList(todoList)
-            sendMessagesWithDelay(extractedList, context)
-        },
-            modifier = Modifier.fillMaxWidth()
-            ) { Text(text = "Enviar Mensajes") }*/
+
     }
 }
 
@@ -255,14 +257,14 @@ fun sendMessagesWithDelay(todoList: List<Todo>, context: Context){
         for (item in todoList){
             try {
                 val smsManager = SmsManager.getDefault()
-                smsManager.sendTextMessage("51"+item.number, null, "Test de SMS", null, null)
+                smsManager.sendTextMessage("51"+item.number, null, "Estimado "+item.title+" le comunicamos que ya se encuentra disponible su abono de programa social.", null, null)
                 Log.d("SMS", "Success")
             } catch (e: Exception) {
                 Log.d("SMS",e.toString())
             }
             Toast.makeText(context, item.title, Toast.LENGTH_SHORT).show()
         }
-        delay(3000)
+        delay(6000)
     }
 
 }
