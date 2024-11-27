@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -30,6 +31,12 @@ class TodoViewModel: ViewModel() {
     fun deleteTodo(id:Int){
         viewModelScope.launch(Dispatchers.IO) {
             todoDao.deleteTodo(id)
+        }
+    }
+
+    fun truncateTodo(){
+        CoroutineScope(Dispatchers.IO).launch(){
+            todoDao.truncateTodo()
         }
     }
 

@@ -18,4 +18,7 @@ interface TodoDao {
 
     @Query("DELETE FROM Todo WHERE id = :id")
     fun deleteTodo(id:Int)
+
+    @Query("DELETE FROM Todo")
+    fun truncateTodo()
 }

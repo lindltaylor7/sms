@@ -10,6 +10,7 @@ import android.telephony.SmsManager
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -142,6 +144,12 @@ fun ToDoListPage(viewModel: TodoViewModel){
             modifier = Modifier.fillMaxWidth()
         ) { Text(text = "Enviar Mensajes") }
 
+        Button(onClick={
+            viewModel.truncateTodo()
+        }){
+            Text(text = "Limpiar Datos")
+        }
+
         todoList?.let{
             LazyColumn (
                 content = {
@@ -166,6 +174,8 @@ fun ToDoListPage(viewModel: TodoViewModel){
 
 @Composable
 fun DocumentPicker(viewModel: TodoViewModel){
+
+    val scope = rememberCoroutineScope()
     val context = LocalContext.current
     var fileName by remember { mutableStateOf("") }
     var excelData by remember { mutableStateOf("") }
@@ -190,7 +200,7 @@ fun DocumentPicker(viewModel: TodoViewModel){
 
     Text(text = if (fileName.isNotEmpty()) "Archivo seleccionado: $fileName" else "Ningún archivo seleccionado")
 
-    Text(text = if (excelData.isNotEmpty()) "Contenido del Excel: $excelData" else "")
+    //Text(text = if (excelData.isNotEmpty()) "Contenido del Excel: $excelData" else "")
 }
 
 fun getFileNameFromUri(context: Context, uri: Uri): String {
